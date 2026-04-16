@@ -57,33 +57,36 @@ export function ChoreConfirmSheet({ chore, householdId, userId, method = 'manual
   return (
     <Sheet open={!!chore} onClose={onClose} title="Log Chore">
       {chore && (
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-5">
           {done ? (
-            <div className="text-center py-8 fade-in">
-              <div className="text-5xl mb-2">🎉</div>
-              <p className="text-lg font-semibold text-green-600">+{chore.points} pts!</p>
+            <div className="text-center py-10 fade-in">
+              <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4">🎉</div>
+              <p className="text-2xl font-bold text-emerald-600">+{chore.points} pts!</p>
+              <p className="text-gray-400 text-sm mt-1">Great job!</p>
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <span className="text-3xl">{chore.emoji}</span>
+              <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-3xl flex-shrink-0">
+                  {chore.emoji}
+                </div>
                 <div>
-                  <p className="font-semibold text-gray-900">{chore.name}</p>
-                  <p className="text-sm text-gray-500">{chore.points} points</p>
+                  <p className="font-bold text-gray-900 text-lg">{chore.name}</p>
+                  <p className="text-emerald-500 font-semibold">{chore.points} points</p>
                 </div>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500 mb-2">When did you do this?</p>
+                <p className="text-sm font-medium text-gray-500 mb-2.5">When did you do this?</p>
                 <div className="flex gap-2">
                   {(['morning', 'afternoon', 'evening'] as TimeOfDay[]).map(t => (
                     <button
                       key={t}
                       onClick={() => setTimeOfDay(t)}
-                      className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-colors ${
+                      className={`flex-1 py-2.5 px-2 rounded-xl text-sm font-semibold transition-all ${
                         timeOfDay === t
-                          ? 'bg-green-500 text-white border-green-500'
-                          : 'bg-white text-gray-600 border-gray-200'
+                          ? 'bg-emerald-500 text-white shadow-sm'
+                          : 'bg-gray-100 text-gray-500'
                       }`}
                     >
                       {timeLabels[t]}
@@ -95,7 +98,7 @@ export function ChoreConfirmSheet({ chore, householdId, userId, method = 'manual
               <button
                 onClick={handleLog}
                 disabled={loading}
-                className="w-full py-3 bg-green-500 text-white font-semibold rounded-xl disabled:opacity-50"
+                className="btn-primary"
               >
                 {loading ? 'Logging…' : 'Mark as Done ✓'}
               </button>

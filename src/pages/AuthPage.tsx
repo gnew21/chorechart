@@ -30,12 +30,12 @@ export function AuthPage() {
 
   if (sent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-white p-6">
-        <div className="text-center max-w-sm">
-          <div className="text-6xl mb-4">📬</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h1>
-          <p className="text-gray-500">We sent a confirmation link to <strong>{email}</strong></p>
-          <button onClick={() => setSent(false)} className="mt-6 text-green-600 text-sm underline">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500 p-6">
+        <div className="text-center max-w-sm fade-in">
+          <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6">📬</div>
+          <h1 className="text-2xl font-bold text-white mb-2">Check your email</h1>
+          <p className="text-white/70">We sent a confirmation link to <strong className="text-white">{email}</strong></p>
+          <button onClick={() => setSent(false)} className="mt-8 px-6 py-2.5 bg-white/20 text-white rounded-xl text-sm font-medium">
             Back to login
           </button>
         </div>
@@ -44,52 +44,50 @@ export function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-white p-6">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-3">🏡</div>
-          <h1 className="text-3xl font-bold text-gray-900">ChoreChart</h1>
-          <p className="text-gray-500 mt-1">Make chores a family adventure</p>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500">
+      {/* Top branding */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 pb-0">
+        <div className="fade-in text-center mb-8">
+          <div className="w-24 h-24 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center text-5xl mx-auto mb-5 shadow-lg">🏡</div>
+          <h1 className="text-4xl font-bold text-white tracking-tight">ChoreChart</h1>
+          <p className="text-white/70 mt-2 text-lg">Make chores a family adventure</p>
+        </div>
+      </div>
+
+      {/* Card */}
+      <div className="bg-white rounded-t-3xl p-6 pt-8 shadow-2xl">
+        {/* Mode toggle */}
+        <div className="flex bg-gray-100 rounded-2xl p-1 mb-6">
+          {(['login', 'signup'] as Mode[]).map(m => (
+            <button
+              key={m}
+              onClick={() => { setMode(m); setError(null) }}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${mode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
+            >
+              {m === 'login' ? 'Sign In' : 'Create Account'}
+            </button>
+          ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-            minLength={6}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
-          />
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input type="email" placeholder="Email address" value={email}
+            onChange={e => setEmail(e.target.value)} required className="input" />
+          <input type="password" placeholder="Password" value={password}
+            onChange={e => setPassword(e.target.value)} required minLength={6} className="input" />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && (
+            <div className="px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
+              <p className="text-red-500 text-sm">{error}</p>
+            </div>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-green-500 text-white font-semibold rounded-xl disabled:opacity-50"
-          >
-            {loading ? '…' : mode === 'login' ? 'Sign In' : 'Create Account'}
+          <button type="submit" disabled={loading} className="btn-primary mt-2">
+            {loading ? '…' : mode === 'login' ? 'Sign In →' : 'Create Account →'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-          <button
-            onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(null) }}
-            className="text-green-600 font-medium"
-          >
-            {mode === 'login' ? 'Sign up' : 'Sign in'}
-          </button>
+        <p className="text-center text-sm text-gray-400 mt-6">
+          By continuing you agree to our terms of service
         </p>
       </div>
     </div>

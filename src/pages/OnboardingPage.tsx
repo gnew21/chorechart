@@ -70,7 +70,6 @@ export function OnboardingPage({ user, onComplete }: Props) {
           early_bird_bonus: 5,
         })
       } else {
-        // For join, we need to allow anonymous select by join_code
         const { data: hh, error: hhErr } = await supabase
           .from('households')
           .select('id')
@@ -98,26 +97,30 @@ export function OnboardingPage({ user, onComplete }: Props) {
 
   if (step === 'profile') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-white p-6">
-        <div className="w-full max-w-sm space-y-6">
-          <div className="text-center">
-            <div className="text-5xl mb-2">👋</div>
-            <h1 className="text-2xl font-bold text-gray-900">Set up your profile</h1>
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500">
+        <div className="flex-1 flex flex-col items-center justify-center p-6 pb-0">
+          <div className="fade-in text-center mb-6">
+            <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg">👋</div>
+            <h1 className="text-3xl font-bold text-white">Set up your profile</h1>
+            <p className="text-white/70 mt-1">How should your family know you?</p>
           </div>
+        </div>
 
+        <div className="bg-white rounded-t-3xl p-6 pt-8 shadow-2xl space-y-5">
           <div>
-            <label className="text-sm text-gray-600 mb-1 block">Your name</label>
+            <label className="text-xs font-semibold text-gray-500 mb-1.5 block">YOUR NAME</label>
             <input
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               placeholder="e.g. Mum, Dad, Emma…"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="input"
+              autoFocus
             />
           </div>
 
           <div>
-            <label className="text-sm text-gray-600 mb-2 block">Pick a colour</label>
-            <div className="flex flex-wrap gap-2">
+            <label className="text-xs font-semibold text-gray-500 mb-2 block">PICK A COLOUR</label>
+            <div className="flex flex-wrap gap-2.5">
               {AVATAR_COLOURS.map(c => (
                 <button
                   key={c}
@@ -129,18 +132,17 @@ export function OnboardingPage({ user, onComplete }: Props) {
             </div>
           </div>
 
-          {/* Preview */}
-          <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white flex-shrink-0" style={{ backgroundColor: colour }}>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white flex-shrink-0 shadow-sm" style={{ backgroundColor: colour }}>
               {displayName ? displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?'}
             </div>
-            <p className="font-medium text-gray-900">{displayName || 'Your name'}</p>
+            <p className="font-semibold text-gray-900">{displayName || 'Your name'}</p>
           </div>
 
           <button
             onClick={() => setStep('household')}
             disabled={!displayName.trim()}
-            className="w-full py-3 bg-green-500 text-white font-semibold rounded-xl disabled:opacity-40"
+            className="btn-primary"
           >
             Continue →
           </button>
@@ -150,25 +152,28 @@ export function OnboardingPage({ user, onComplete }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-white p-6">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="text-center">
-          <div className="text-5xl mb-2">🏡</div>
-          <h1 className="text-2xl font-bold text-gray-900">Your household</h1>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 pb-0">
+        <div className="fade-in text-center mb-6">
+          <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg">🏡</div>
+          <h1 className="text-3xl font-bold text-white">Your household</h1>
+          <p className="text-white/70 mt-1">Create or join a family group</p>
         </div>
+      </div>
 
-        <div className="flex rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-t-3xl p-6 pt-8 shadow-2xl space-y-5">
+        <div className="flex bg-gray-100 rounded-2xl p-1">
           <button
             onClick={() => setMode('create')}
-            className={`flex-1 py-3 text-sm font-medium ${mode === 'create' ? 'bg-green-500 text-white' : 'text-gray-500'}`}
+            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${mode === 'create' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
           >
-            Create new
+            Create New
           </button>
           <button
             onClick={() => setMode('join')}
-            className={`flex-1 py-3 text-sm font-medium ${mode === 'join' ? 'bg-green-500 text-white' : 'text-gray-500'}`}
+            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${mode === 'join' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
           >
-            Join existing
+            Join Existing
           </button>
         </div>
 
@@ -177,29 +182,33 @@ export function OnboardingPage({ user, onComplete }: Props) {
             value={householdName}
             onChange={e => setHouseholdName(e.target.value)}
             placeholder="e.g. The Smith Family"
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="input"
           />
         ) : (
           <input
             value={joinCode}
             onChange={e => setJoinCode(e.target.value)}
             placeholder="Enter 6-letter join code"
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400 uppercase tracking-widest"
+            className="input uppercase tracking-widest"
             maxLength={6}
           />
         )}
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && (
+          <div className="px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
+            <p className="text-red-500 text-sm">{error}</p>
+          </div>
+        )}
 
         <button
           onClick={handleHousehold}
           disabled={loading || (mode === 'create' ? !householdName.trim() : joinCode.length < 6)}
-          className="w-full py-3 bg-green-500 text-white font-semibold rounded-xl disabled:opacity-40"
+          className="btn-primary"
         >
           {loading ? '…' : mode === 'create' ? 'Create Household 🎉' : 'Join Household →'}
         </button>
 
-        <button onClick={() => setStep('profile')} className="w-full text-sm text-gray-400">
+        <button onClick={() => setStep('profile')} className="w-full text-sm text-gray-400 py-1">
           ← Back
         </button>
       </div>

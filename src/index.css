@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-gray-50 text-gray-900;
     margin: 0;
     overscroll-behavior: none;
   }
@@ -27,7 +27,7 @@
   }
 
   .sheet-enter {
-    animation: sheet-up 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    animation: sheet-up 0.35s cubic-bezier(0.32, 0.72, 0, 1);
   }
 
   @keyframes sheet-up {
@@ -36,11 +36,31 @@
   }
 
   .fade-in {
-    animation: fade 0.2s ease-in;
+    animation: fade 0.25s ease-out;
   }
 
   @keyframes fade {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100;
+  }
+
+  .btn-primary {
+    @apply w-full py-3.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-2xl shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:scale-100;
+  }
+
+  .btn-secondary {
+    @apply w-full py-3.5 bg-gray-100 text-gray-700 font-semibold rounded-2xl active:scale-95 transition-all;
+  }
+
+  .input {
+    @apply w-full px-4 py-3.5 bg-gray-100 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white transition-all;
+  }
+
+  .page-header {
+    @apply px-5 pt-6 pb-4 bg-white/80 backdrop-blur sticky top-0 z-10 border-b border-gray-100/80;
   }
 }

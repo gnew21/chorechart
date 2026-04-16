@@ -88,21 +88,23 @@ export function PhotosPage({ household, member, members }: Props) {
   const memberMap = new Map(members.map(m => [m.user_id, m]))
 
   return (
-    <div className="pb-20">
+    <div className="pb-24 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="px-4 pt-6 pb-4 bg-white sticky top-0 z-10 border-b border-gray-100">
+      <div className="bg-gradient-to-br from-cyan-500 via-sky-500 to-blue-500 px-5 pt-14 pb-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900">Family Photos</h1>
+          <div>
+            <h1 className="text-white text-2xl font-bold">Family Photos</h1>
+            <p className="text-cyan-100 text-sm mt-0.5">{photos.length} photos</p>
+          </div>
           <button
             onClick={() => fileRef.current?.click()}
-            className="flex items-center gap-1 px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded-xl"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white/20 text-white font-semibold rounded-2xl text-sm active:scale-95 transition-all"
           >
-            + Upload
+            <span>📷</span> Upload
           </button>
         </div>
       </div>
 
-      {/* Upload input */}
       <input
         ref={fileRef}
         type="file"
@@ -111,31 +113,30 @@ export function PhotosPage({ household, member, members }: Props) {
         onChange={e => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.target.value = '' }}
       />
 
-      {uploading && (
-        <div className="mx-4 mt-4 p-3 bg-green-50 rounded-xl text-center text-green-600 text-sm font-medium">
-          Uploading photo…
-        </div>
-      )}
+      <div className="px-4 -mt-4">
+        {uploading && (
+          <div className="card p-3 mb-4 text-center text-emerald-600 text-sm font-semibold">
+            Uploading photo…
+          </div>
+        )}
 
-      {/* Grid */}
-      <div className="px-4 pt-4">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <p className="text-gray-400">Loading photos…</p>
           </div>
         ) : photos.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-6xl mb-3">📷</div>
-            <p className="text-gray-500 font-medium">No photos yet</p>
+            <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-sm">📷</div>
+            <p className="text-gray-700 font-bold text-lg">No photos yet</p>
             <p className="text-gray-400 text-sm mt-1">Tap Upload to add your first family photo</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-3 gap-1.5">
             {photos.map(photo => (
               <button
                 key={photo.id}
                 onClick={() => setSelected(photo)}
-                className="aspect-square bg-gray-100 rounded-lg overflow-hidden"
+                className="aspect-square bg-gray-100 rounded-2xl overflow-hidden active:scale-95 transition-all"
               >
                 {photo.url ? (
                   <img src={photo.url} alt={photo.caption ?? ''} className="w-full h-full object-cover" />
@@ -151,12 +152,12 @@ export function PhotosPage({ household, member, members }: Props) {
       {/* Photo detail modal */}
       {selected && (
         <div className="fixed inset-0 z-50 bg-black flex flex-col">
-          <div className="flex items-center justify-between p-4">
-            <button onClick={() => setSelected(null)} className="text-white text-2xl">←</button>
+          <div className="flex items-center justify-between p-4 pt-12">
+            <button onClick={() => setSelected(null)} className="w-10 h-10 bg-white/20 text-white rounded-2xl flex items-center justify-center text-xl">←</button>
             {selected.uploaded_by === member.user_id && (
               <button
                 onClick={() => handleDelete(selected)}
-                className="text-red-400 text-sm font-medium"
+                className="px-4 py-2 bg-red-500/80 text-white text-sm font-semibold rounded-xl"
               >
                 Delete
               </button>
@@ -165,23 +166,23 @@ export function PhotosPage({ household, member, members }: Props) {
 
           <div className="flex-1 flex items-center justify-center p-4">
             {selected.url && (
-              <img src={selected.url} alt={selected.caption ?? ''} className="max-w-full max-h-full object-contain rounded-xl" />
+              <img src={selected.url} alt={selected.caption ?? ''} className="max-w-full max-h-full object-contain rounded-2xl" />
             )}
           </div>
 
-          <div className="p-4 bg-black/60">
+          <div className="p-5 bg-gradient-to-t from-black/80 to-transparent">
             {selected.caption && (
-              <p className="text-white font-medium mb-1">{selected.caption}</p>
+              <p className="text-white font-semibold mb-2">{selected.caption}</p>
             )}
             <div className="flex items-center gap-2">
               {(() => {
                 const uploader = memberMap.get(selected.uploaded_by)
                 return uploader ? (
                   <>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: uploader.avatar_colour }}>
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ backgroundColor: uploader.avatar_colour }}>
                       {uploader.display_name[0].toUpperCase()}
                     </div>
-                    <p className="text-white/70 text-sm">{uploader.display_name}</p>
+                    <p className="text-white/80 text-sm font-medium">{uploader.display_name}</p>
                   </>
                 ) : null
               })()}

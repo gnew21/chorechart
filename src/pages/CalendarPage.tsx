@@ -99,64 +99,69 @@ export function CalendarPage({ household, member, members }: Props) {
   const selectedEvents = selectedDay ? eventsForDay(selectedDay) : []
 
   return (
-    <div className="pb-20">
+    <div className="pb-24 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="px-4 pt-6 pb-4 bg-white sticky top-0 z-10 border-b border-gray-100">
-        <div className="flex items-center justify-between mb-1">
-          <h1 className="text-xl font-bold text-gray-900">Calendar</h1>
+      <div className="bg-gradient-to-br from-pink-500 via-rose-500 to-red-400 px-5 pt-14 pb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-white text-2xl font-bold">Calendar</h1>
+            <p className="text-pink-100 text-sm mt-0.5">{format(currentMonth, 'MMMM yyyy')}</p>
+          </div>
           <button
             onClick={() => openAdd()}
-            className="w-8 h-8 bg-green-500 text-white rounded-full text-xl flex items-center justify-center"
+            className="w-10 h-10 bg-white/20 text-white rounded-2xl text-2xl flex items-center justify-center font-light active:scale-95 transition-all"
           >+</button>
-        </div>
-        <div className="flex items-center justify-between">
-          <button onClick={() => setCurrentMonth(m => subMonths(m, 1))} className="text-gray-400 text-xl px-2">‹</button>
-          <p className="font-semibold text-gray-900">{format(currentMonth, 'MMMM yyyy')}</p>
-          <button onClick={() => setCurrentMonth(m => addMonths(m, 1))} className="text-gray-400 text-xl px-2">›</button>
         </div>
       </div>
 
-      <div className="px-4 pt-4">
-        {/* Day headers */}
-        <div className="grid grid-cols-7 mb-1">
-          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-            <div key={i} className="text-center text-xs font-medium text-gray-400 py-1">{d}</div>
-          ))}
-        </div>
+      <div className="px-4 -mt-4 space-y-4">
+        {/* Calendar card */}
+        <div className="card p-4">
+          <div className="flex items-center justify-between mb-3">
+            <button onClick={() => setCurrentMonth(m => subMonths(m, 1))} className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 font-bold">‹</button>
+            <p className="font-bold text-gray-900">{format(currentMonth, 'MMMM yyyy')}</p>
+            <button onClick={() => setCurrentMonth(m => addMonths(m, 1))} className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 font-bold">›</button>
+          </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-7 gap-1">
-          {Array.from({ length: startOffset }).map((_, i) => <div key={`off-${i}`} />)}
-          {days.map(day => {
-            const dayEvents = eventsForDay(day)
-            const isSelected = selectedDay && isSameDay(day, selectedDay)
-            return (
-              <button
-                key={day.toISOString()}
-                onClick={() => setSelectedDay(isSameDay(day, selectedDay ?? new Date('')) ? null : day)}
-                className={`aspect-square rounded-xl flex flex-col items-center justify-start pt-1 transition-all ${
-                  isSelected ? 'bg-green-500 text-white' :
-                  isToday(day) ? 'bg-green-50 text-green-600 font-bold' :
-                  !isSameMonth(day, currentMonth) ? 'text-gray-300' : 'text-gray-700'
-                }`}
-              >
-                <span className="text-xs">{format(day, 'd')}</span>
-                <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center">
-                  {dayEvents.slice(0, 3).map(e => (
-                    <span key={e.id} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: isSelected ? 'white' : e.colour }} />
-                  ))}
-                </div>
-              </button>
-            )
-          })}
+          <div className="grid grid-cols-7 mb-1">
+            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
+              <div key={i} className="text-center text-xs font-semibold text-gray-400 py-1">{d}</div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: startOffset }).map((_, i) => <div key={`off-${i}`} />)}
+            {days.map(day => {
+              const dayEvents = eventsForDay(day)
+              const isSelected = selectedDay && isSameDay(day, selectedDay)
+              return (
+                <button
+                  key={day.toISOString()}
+                  onClick={() => setSelectedDay(isSameDay(day, selectedDay ?? new Date('')) ? null : day)}
+                  className={`aspect-square rounded-xl flex flex-col items-center justify-start pt-1.5 transition-all ${
+                    isSelected ? 'bg-rose-500 text-white' :
+                    isToday(day) ? 'bg-rose-50 text-rose-600 font-bold' :
+                    !isSameMonth(day, currentMonth) ? 'text-gray-300' : 'text-gray-700'
+                  }`}
+                >
+                  <span className="text-xs font-medium">{format(day, 'd')}</span>
+                  <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center">
+                    {dayEvents.slice(0, 3).map(e => (
+                      <span key={e.id} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: isSelected ? 'rgba(255,255,255,0.8)' : e.colour }} />
+                    ))}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {/* Selected day events */}
         {selectedDay && (
-          <div className="mt-4">
-            <div className="flex items-center justify-between mb-2">
-              <p className="font-semibold text-gray-800">{format(selectedDay, 'EEEE, MMMM d')}</p>
-              <button onClick={() => openAdd(selectedDay)} className="text-sm text-green-600 font-medium">+ Add</button>
+          <div>
+            <div className="flex items-center justify-between mb-2 px-1">
+              <p className="font-bold text-gray-900">{format(selectedDay, 'EEEE, MMMM d')}</p>
+              <button onClick={() => openAdd(selectedDay)} className="text-sm text-rose-500 font-semibold">+ Add</button>
             </div>
             {selectedEvents.length === 0 ? (
               <p className="text-gray-400 text-sm py-4 text-center">No events — tap + to add one</p>
@@ -165,16 +170,16 @@ export function CalendarPage({ household, member, members }: Props) {
                 {selectedEvents.map(event => {
                   const creator = memberMap.get(event.created_by)
                   return (
-                    <div key={event.id} className="flex items-start gap-3 p-3 bg-white border border-gray-100 rounded-xl">
-                      <div className="w-3 h-full mt-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: event.colour, minHeight: 12 }} />
+                    <div key={event.id} className="card flex items-start gap-3 p-4">
+                      <div className="w-3 rounded-full flex-shrink-0 mt-1" style={{ backgroundColor: event.colour, height: 44 }} />
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900">{event.title}</p>
-                        {event.event_time && <p className="text-xs text-gray-500">🕐 {event.event_time.slice(0, 5)}</p>}
-                        {event.description && <p className="text-sm text-gray-500 mt-0.5">{event.description}</p>}
-                        {creator && <p className="text-xs text-gray-400 mt-1">Added by {creator.display_name}</p>}
+                        <p className="font-semibold text-gray-900">{event.title}</p>
+                        {event.event_time && <p className="text-xs text-gray-500 mt-0.5">🕐 {event.event_time.slice(0, 5)}</p>}
+                        {event.description && <p className="text-sm text-gray-500 mt-1">{event.description}</p>}
+                        {creator && <p className="text-xs text-gray-400 mt-1">by {creator.display_name}</p>}
                       </div>
                       {event.created_by === member.user_id && (
-                        <button onClick={() => handleDelete(event.id)} className="text-gray-300 text-lg">×</button>
+                        <button onClick={() => handleDelete(event.id)} className="w-7 h-7 rounded-full bg-gray-100 text-gray-400 text-lg flex items-center justify-center">×</button>
                       )}
                     </div>
                   )
@@ -184,28 +189,26 @@ export function CalendarPage({ household, member, members }: Props) {
           </div>
         )}
 
-        {/* Upcoming events */}
+        {/* This month's events */}
         {!selectedDay && !loading && (
-          <div className="mt-6">
-            <p className="font-semibold text-gray-700 mb-3">This Month</p>
+          <div>
+            <p className="font-bold text-gray-900 mb-2 px-1">This Month</p>
             {events.length === 0 ? (
-              <p className="text-gray-400 text-sm text-center py-4">No events this month</p>
+              <p className="text-gray-400 text-sm text-center py-8">No events this month</p>
             ) : (
               <div className="space-y-2">
-                {events.map(event => {
-                  return (
-                    <div key={event.id} className="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl">
-                      <div className="w-2 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: event.colour }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-gray-900">{event.title}</p>
-                        <p className="text-xs text-gray-400">{format(new Date(event.event_date + 'T00:00:00'), 'MMM d')}{event.event_time ? ` · ${event.event_time.slice(0, 5)}` : ''}</p>
-                      </div>
-                      {event.created_by === member.user_id && (
-                        <button onClick={() => handleDelete(event.id)} className="text-gray-300 text-lg">×</button>
-                      )}
+                {events.map(event => (
+                  <div key={event.id} className="card flex items-center gap-3 p-3.5">
+                    <div className="w-2 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: event.colour }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-gray-900">{event.title}</p>
+                      <p className="text-xs text-gray-400">{format(new Date(event.event_date + 'T00:00:00'), 'MMM d')}{event.event_time ? ` · ${event.event_time.slice(0, 5)}` : ''}</p>
                     </div>
-                  )
-                })}
+                    {event.created_by === member.user_id && (
+                      <button onClick={() => handleDelete(event.id)} className="w-7 h-7 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center">×</button>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -215,38 +218,31 @@ export function CalendarPage({ household, member, members }: Props) {
       {/* Add Event Sheet */}
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-end">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowAdd(false)} />
-          <div className="relative w-full bg-white rounded-t-2xl p-4 space-y-4 max-h-[90vh] overflow-y-auto">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAdd(false)} />
+          <div className="relative w-full max-w-lg mx-auto bg-white rounded-t-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto sheet-enter shadow-2xl">
+            <div className="flex justify-center pt-1 pb-2">
+              <div className="w-10 h-1 bg-gray-200 rounded-full" />
+            </div>
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900">Add Event</h2>
-              <button onClick={() => setShowAdd(false)} className="text-gray-400 text-2xl">×</button>
+              <h2 className="font-bold text-gray-900 text-lg">Add Event</h2>
+              <button onClick={() => setShowAdd(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-lg">&times;</button>
             </div>
 
             <input
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="Event title"
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="input"
             />
 
             <div className="flex gap-2">
               <div className="flex-1">
-                <label className="text-xs text-gray-500 mb-1 block">Date</label>
-                <input
-                  type="date"
-                  value={eventDate}
-                  onChange={e => setEventDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none"
-                />
+                <label className="text-xs font-medium text-gray-500 mb-1.5 block">Date</label>
+                <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} className="input text-sm" />
               </div>
               <div className="flex-1">
-                <label className="text-xs text-gray-500 mb-1 block">Time (optional)</label>
-                <input
-                  type="time"
-                  value={eventTime}
-                  onChange={e => setEventTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none"
-                />
+                <label className="text-xs font-medium text-gray-500 mb-1.5 block">Time (optional)</label>
+                <input type="time" value={eventTime} onChange={e => setEventTime(e.target.value)} className="input text-sm" />
               </div>
             </div>
 
@@ -255,17 +251,17 @@ export function CalendarPage({ household, member, members }: Props) {
               onChange={e => setDescription(e.target.value)}
               placeholder="Description (optional)"
               rows={2}
-              className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none resize-none"
+              className="input resize-none"
             />
 
             <div>
-              <label className="text-xs text-gray-500 mb-2 block">Colour</label>
+              <label className="text-xs font-medium text-gray-500 mb-2 block">Colour</label>
               <div className="flex gap-2 flex-wrap">
                 {EVENT_COLOURS.map(c => (
                   <button
                     key={c}
                     onClick={() => setColour(c)}
-                    className={`w-8 h-8 rounded-full border-4 transition-all ${colour === c ? 'border-gray-800 scale-110' : 'border-transparent'}`}
+                    className={`w-9 h-9 rounded-full border-4 transition-all ${colour === c ? 'border-gray-800 scale-110' : 'border-transparent'}`}
                     style={{ backgroundColor: c }}
                   />
                 ))}
@@ -275,7 +271,7 @@ export function CalendarPage({ household, member, members }: Props) {
             <button
               onClick={handleSave}
               disabled={saving || !title.trim() || !eventDate}
-              className="w-full py-3 bg-green-500 text-white font-semibold rounded-xl disabled:opacity-40"
+              className="btn-primary"
             >
               {saving ? 'Saving…' : 'Add Event'}
             </button>

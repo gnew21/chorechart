@@ -58,29 +58,33 @@ export function SettingsPage({ household, member, onRefresh }: Props) {
   }
 
   return (
-    <div className="pb-20">
-      <div className="px-4 pt-6 pb-4 border-b border-gray-100">
-        <h1 className="text-xl font-bold text-gray-900">Settings</h1>
+    <div className="pb-24 bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-slate-700 via-slate-600 to-gray-600 px-5 pt-14 pb-16">
+        <div className="flex items-center gap-4">
+          <Avatar name={name || member.display_name} colour={colour} size="lg" />
+          <div>
+            <h1 className="text-white text-xl font-bold">{member.display_name}</h1>
+            <p className="text-slate-300 text-sm">{household.name} · {planLabel[household.plan]}</p>
+          </div>
+        </div>
       </div>
 
-      <div className="p-4 space-y-6">
-        {/* Profile */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-4 space-y-4">
-          <h2 className="font-semibold text-gray-800">Your Profile</h2>
-          <div className="flex items-center gap-3">
-            <Avatar name={name || member.display_name} colour={colour} size="lg" />
-            <div className="flex-1">
-              <p className="text-sm text-gray-500">Display name</p>
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-              />
-            </div>
+      <div className="px-4 -mt-6 space-y-4">
+        {/* Profile card */}
+        <div className="card p-5 space-y-4">
+          <h2 className="font-bold text-gray-900">Your Profile</h2>
+          <div>
+            <label className="text-xs font-medium text-gray-500 mb-1.5 block">Display name</label>
+            <input
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="input"
+            />
           </div>
           <div>
-            <p className="text-sm text-gray-500 mb-2">Avatar colour</p>
-            <div className="flex flex-wrap gap-2">
+            <label className="text-xs font-medium text-gray-500 mb-2 block">Avatar colour</label>
+            <div className="flex flex-wrap gap-2.5">
               {AVATAR_COLOURS.map(c => (
                 <button
                   key={c}
@@ -94,27 +98,27 @@ export function SettingsPage({ household, member, onRefresh }: Props) {
           <button
             onClick={saveProfile}
             disabled={saving}
-            className="w-full py-2.5 bg-green-500 text-white font-semibold rounded-xl disabled:opacity-50 text-sm"
+            className="btn-primary"
           >
             {saved ? '✓ Saved!' : saving ? 'Saving…' : 'Save Profile'}
           </button>
         </div>
 
-        {/* Household */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-4">
-          <h2 className="font-semibold text-gray-800 mb-3">Household</h2>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Name</span>
-              <span className="font-medium text-gray-900">{household.name}</span>
+        {/* Household info */}
+        <div className="card p-5">
+          <h2 className="font-bold text-gray-900 mb-4">Household</h2>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500">Name</span>
+              <span className="font-semibold text-gray-900">{household.name}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Join Code</span>
-              <span className="font-mono font-bold text-gray-900 tracking-widest">{household.join_code}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500">Join Code</span>
+              <span className="font-mono font-bold text-gray-900 tracking-widest bg-gray-100 px-3 py-1 rounded-lg">{household.join_code}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Plan</span>
-              <span className="font-medium text-green-600">{planLabel[household.plan]}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500">Plan</span>
+              <span className="font-semibold text-emerald-600">{planLabel[household.plan]}</span>
             </div>
           </div>
         </div>
@@ -122,28 +126,28 @@ export function SettingsPage({ household, member, onRefresh }: Props) {
         {/* Upgrade */}
         {household.plan !== 'family_plus' && (
           <div className="space-y-3">
-            <h2 className="font-semibold text-gray-800">Upgrade Plan</h2>
+            <h2 className="font-bold text-gray-900 px-1">Upgrade Plan</h2>
             {(['family', 'family_plus'] as const)
               .filter(p => household.plan === 'free' || p === 'family_plus')
               .map(planKey => (
-                <div key={planKey} className="bg-white border border-gray-100 rounded-2xl p-4">
-                  <div className="flex items-center justify-between mb-2">
+                <div key={planKey} className="card p-4 border-2 border-emerald-100">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="font-semibold text-gray-900">{PLANS[planKey].name}</p>
-                      <p className="text-green-600 font-bold">{PLANS[planKey].price}</p>
+                      <p className="font-bold text-gray-900">{PLANS[planKey].name}</p>
+                      <p className="text-emerald-600 font-bold text-lg">{PLANS[planKey].price}</p>
                     </div>
                     <button
                       onClick={() => handleUpgrade(planKey)}
                       disabled={upgrading}
-                      className="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50"
+                      className="px-4 py-2 bg-emerald-500 text-white text-sm font-bold rounded-xl disabled:opacity-50 active:scale-95 transition-all"
                     >
                       Upgrade
                     </button>
                   </div>
-                  <ul className="space-y-1">
+                  <ul className="space-y-1.5">
                     {PLANS[planKey].features.map(f => (
-                      <li key={f} className="text-sm text-gray-500 flex items-center gap-1">
-                        <span className="text-green-500">✓</span> {f}
+                      <li key={f} className="text-sm text-gray-500 flex items-center gap-2">
+                        <span className="text-emerald-500 font-bold">✓</span> {f}
                       </li>
                     ))}
                   </ul>
@@ -155,7 +159,7 @@ export function SettingsPage({ household, member, onRefresh }: Props) {
         {/* Sign out */}
         <button
           onClick={signOut}
-          className="w-full py-3 border border-red-200 text-red-500 font-semibold rounded-xl text-sm"
+          className="w-full py-3.5 border-2 border-red-100 text-red-400 font-semibold rounded-2xl text-sm active:scale-95 transition-all"
         >
           Sign Out
         </button>
