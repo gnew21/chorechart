@@ -5,7 +5,8 @@ interface Props {
   member: HouseholdMember | null
 }
 
-export function BottomNav({ member: _member }: Props) {
+export function BottomNav({ member }: Props) {
+  const isAdmin = member?.role === 'admin'
   const base = 'flex flex-col items-center gap-0.5 text-xs py-2 px-3 text-gray-400'
   const active = 'text-green-500'
 
@@ -20,6 +21,10 @@ export function BottomNav({ member: _member }: Props) {
           <span className="text-xl">✅</span>
           <span>Log</span>
         </NavLink>
+        <NavLink to="/tracking" className={({ isActive }) => `${base} ${isActive ? active : ''}`}>
+          <span className="text-xl">📊</span>
+          <span>Track</span>
+        </NavLink>
         <NavLink to="/calendar" className={({ isActive }) => `${base} ${isActive ? active : ''}`}>
           <span className="text-xl">📅</span>
           <span>Calendar</span>
@@ -28,6 +33,12 @@ export function BottomNav({ member: _member }: Props) {
           <span className="text-xl">📷</span>
           <span>Photos</span>
         </NavLink>
+        {isAdmin && (
+          <NavLink to="/admin" className={({ isActive }) => `${base} ${isActive ? active : ''}`}>
+            <span className="text-xl">⚙️</span>
+            <span>Admin</span>
+          </NavLink>
+        )}
         <NavLink to="/settings" className={({ isActive }) => `${base} ${isActive ? active : ''}`}>
           <span className="text-xl">👤</span>
           <span>Me</span>
