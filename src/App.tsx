@@ -17,6 +17,8 @@ import { AdminPage } from './pages/AdminPage'
 import { QRManagerPage } from './pages/QRManagerPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { SundayWinnerPage } from './pages/SundayWinnerPage'
+import { CalendarPage } from './pages/CalendarPage'
+import { PhotosPage } from './pages/PhotosPage'
 import { BottomNav } from './components/BottomNav'
 
 import type { Prize } from './types'
@@ -109,6 +111,12 @@ function AppShell() {
             <Route path="/admin/qr" element={<QRManagerPage chores={chores} />} />
           </>
         )}
+        <Route path="/calendar" element={
+          <CalendarPage household={household} member={member} members={members} />
+        } />
+        <Route path="/photos" element={
+          <PhotosPage household={household} member={member} members={members} />
+        } />
         <Route path="/settings" element={
           <SettingsPage household={household} member={member} onRefresh={handleRefresh} />
         } />
