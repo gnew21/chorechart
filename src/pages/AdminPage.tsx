@@ -126,6 +126,15 @@ function ChoresTab({ household, chores, onRefresh, emojis }: { household: Househ
         </div>
         <div>
           <label className="text-xs font-medium text-gray-500 mb-1.5 block">Emoji</label>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl flex-shrink-0">{emoji}</div>
+            <input
+              value={emoji}
+              onChange={e => { const v = [...e.target.value].filter(c => c.trim()); if (v.length) setEmoji(v[v.length - 1]) }}
+              placeholder="Tap to open emoji keyboard…"
+              className="input"
+            />
+          </div>
           <div className="flex flex-wrap gap-1.5">
             {emojis.map(e => (
               <button key={e} onClick={() => setEmoji(e)} className={`text-xl p-2 rounded-xl transition-all ${emoji === e ? 'bg-amber-100 scale-110' : 'bg-gray-50'}`}>{e}</button>

@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { Household, HouseholdMember, Chore, ChoreLog } from '../types'
 import { ChoreConfirmSheet } from '../components/ChoreConfirmSheet'
 import { Avatar } from '../components/Avatar'
 import { rankMembers } from '../utils/points'
 import { buildStreakMap } from '../utils/streaks'
 import { usePointRules } from '../hooks/usePointRules'
+import { supabase } from '../lib/supabase'
 
 interface Props {
   household: Household
@@ -15,10 +17,31 @@ interface Props {
   onLogged: () => void
 }
 
+interface Update {
+  id: string
+  title: string
+  body: string | null
+  created_at: string
+  posted_by: string
+}
+
 export function HomePage({ household, member, members, chores, weeklyLogs, onLogged }: Props) {
   const [selectedChore, setSelectedChore] = useState<Chore | null>(null)
+  const [latestUpdate, setLatestUpdate] = useState<Update | null>(null)
+  const navigate = useNavigate()
   const rules = usePointRules(household.id)
   void rules
+
+  useEffect(() => {
+    supabase
+      .from('updates')
+      .select('*')
+      .eq('household_id', household.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => setLatestUpdate(data))
+  }, [household.id])
 
   const streaks = buildStreakMap(weeklyLogs, members.map(m => m.user_id))
   const ranked = rankMembers(members, weeklyLogs, streaks)
@@ -113,6 +136,26 @@ export function HomePage({ household, member, members, chores, weeklyLogs, onLog
           ))}
         </div>
       </div>
+
+      {/* Latest update */}
+      {latestUpdate && (
+        <div className="px-4 mt-5">
+          <button
+            onClick={() => navigate('/updates')}
+            className="w-full card p-4 bg-indigo-50 border-indigo-100 text-left active:scale-95 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center text-xl flex-shrink-0">📢</div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-indigo-400 mb-0.5">LATEST UPDATE</p>
+                <p className="font-bold text-gray-900 truncate">{latestUpdate.title}</p>
+                {latestUpdate.body && <p className="text-sm text-gray-500 truncate mt-0.5">{latestUpdate.body}</p>}
+              </div>
+              <span className="text-gray-300 text-lg">›</span>
+            </div>
+          </button>
+        </div>
+      )}
 
       {/* Recent activity */}
       {recentLogs.length > 0 && (

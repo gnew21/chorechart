@@ -13,7 +13,7 @@ export function BottomNav({ member }: Props) {
   const base = 'flex flex-col items-center gap-0.5 text-xs py-2 px-3 text-gray-400'
   const active = 'text-green-500'
 
-  const moreRoutes = ['/tracking', '/calendar', '/photos', ...(isAdmin ? ['/admin'] : [])]
+  const moreRoutes = ['/tracking', '/calendar', '/photos', '/updates', ...(isAdmin ? ['/admin'] : [])]
   const moreIsActive = moreRoutes.includes(location.pathname)
 
   return (
@@ -34,9 +34,14 @@ export function BottomNav({ member }: Props) {
                 <span className="font-medium">Family Calendar</span>
               </NavLink>
               <NavLink to="/photos" onClick={() => setMoreOpen(false)}
-                className={({ isActive }) => `flex items-center gap-3 px-4 py-3.5 ${isAdmin ? 'border-b border-gray-50' : ''} ${isActive ? 'text-green-600 bg-green-50' : 'text-gray-700'}`}>
+                className={({ isActive }) => `flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 ${isActive ? 'text-green-600 bg-green-50' : 'text-gray-700'}`}>
                 <span className="text-xl">📷</span>
                 <span className="font-medium">Family Photos</span>
+              </NavLink>
+              <NavLink to="/updates" onClick={() => setMoreOpen(false)}
+                className={({ isActive }) => `flex items-center gap-3 px-4 py-3.5 ${isAdmin ? 'border-b border-gray-50' : ''} ${isActive ? 'text-green-600 bg-green-50' : 'text-gray-700'}`}>
+                <span className="text-xl">📢</span>
+                <span className="font-medium">Updates</span>
               </NavLink>
               {isAdmin && (
                 <NavLink to="/admin" onClick={() => setMoreOpen(false)}

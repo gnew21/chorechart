@@ -19,6 +19,7 @@ import { SettingsPage } from './pages/SettingsPage'
 import { SundayWinnerPage } from './pages/SundayWinnerPage'
 import { CalendarPage } from './pages/CalendarPage'
 import { PhotosPage } from './pages/PhotosPage'
+import { UpdatesPage } from './pages/UpdatesPage'
 import { BottomNav } from './components/BottomNav'
 
 import type { Prize } from './types'
@@ -103,19 +104,22 @@ function AppShell() {
         <Route path="/tracking" element={
           <TrackingPage household={household} member={member} members={members} chores={chores} />
         } />
-        {member.role === 'admin' && (
-          <>
-            <Route path="/admin" element={
-              <AdminPage household={household} member={member} members={members} chores={chores} onRefresh={handleRefresh} />
-            } />
-            <Route path="/admin/qr" element={<QRManagerPage chores={chores} />} />
-          </>
-        )}
+        <Route path="/admin" element={
+          member.role === 'admin'
+            ? <AdminPage household={household} member={member} members={members} chores={chores} onRefresh={handleRefresh} />
+            : <Navigate to="/" replace />
+        } />
+        <Route path="/admin/qr" element={
+          member.role === 'admin' ? <QRManagerPage chores={chores} /> : <Navigate to="/" replace />
+        } />
         <Route path="/calendar" element={
           <CalendarPage household={household} member={member} members={members} />
         } />
         <Route path="/photos" element={
           <PhotosPage household={household} member={member} members={members} />
+        } />
+        <Route path="/updates" element={
+          <UpdatesPage household={household} member={member} members={members} />
         } />
         <Route path="/settings" element={
           <SettingsPage household={household} member={member} onRefresh={handleRefresh} />
