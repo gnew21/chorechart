@@ -27,7 +27,7 @@ export function QRScanPage({ household, member, chores, onLogged }: Props) {
       { fps: 10, qrbox: { width: 250, height: 250 } },
       (decoded) => {
         const choreId = decodeChoreQR(decoded)
-        if (!choreId) { setError('Not a valid ChoreChart QR code'); return }
+        if (!choreId) { setError('Not a valid FamilyApp QR code'); return }
         const chore = chores.find(c => c.id === choreId)
         if (!chore) { setError('Chore not found in your household'); return }
         scanner.stop().catch(() => {})

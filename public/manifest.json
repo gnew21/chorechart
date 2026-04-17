@@ -1,7 +1,7 @@
 {
-  "name": "ChoreChart",
-  "short_name": "ChoreChart",
-  "description": "Make chores a family adventure",
+  "name": "FamilyApp",
+  "short_name": "FamilyApp",
+  "description": "Chores, points and family life — all in one place",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

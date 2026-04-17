@@ -49,8 +49,8 @@ export function AuthPage() {
       <div className="flex-1 flex flex-col items-center justify-center p-6 pb-0">
         <div className="fade-in text-center mb-8">
           <div className="w-24 h-24 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center text-5xl mx-auto mb-5 shadow-lg">🏡</div>
-          <h1 className="text-4xl font-bold text-white tracking-tight">ChoreChart</h1>
-          <p className="text-white/70 mt-2 text-lg">Make chores a family adventure</p>
+          <h1 className="text-4xl font-bold text-white tracking-tight">FamilyApp</h1>
+          <p className="text-white/70 mt-2 text-lg">Chores, points and family life</p>
         </div>
       </div>
 

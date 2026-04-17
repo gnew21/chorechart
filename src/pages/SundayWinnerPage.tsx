@@ -36,7 +36,7 @@ export function SundayWinnerPage({ members, weeklyLogs, currentPrize, onDismiss 
       <div className="text-center mb-8 fade-in">
         <p className="text-lg opacity-80 mb-2">Week Ending</p>
         <h1 className="text-4xl font-bold mb-1">🏆 Winner!</h1>
-        <p className="opacity-80">ChoreChart Weekly Champion</p>
+        <p className="opacity-80">FamilyApp Weekly Champion</p>
       </div>
 
       {winner && winner.points > 0 ? (
