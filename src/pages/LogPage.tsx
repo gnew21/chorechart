@@ -83,6 +83,7 @@ export function LogPage({ household, member, chores, onLogged }: Props) {
         chore={selected}
         householdId={household.id}
         userId={member.user_id}
+        displayName={member.display_name}
         method="manual"
         onLogged={onLogged}
         onClose={() => setSelected(null)}

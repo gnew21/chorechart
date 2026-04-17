@@ -21,6 +21,7 @@ import { CalendarPage } from './pages/CalendarPage'
 import { PhotosPage } from './pages/PhotosPage'
 import { UpdatesPage } from './pages/UpdatesPage'
 import { BottomNav } from './components/BottomNav'
+import { usePushSubscription } from './hooks/usePushSubscription'
 
 import type { Prize } from './types'
 
@@ -29,6 +30,7 @@ function AppShell() {
   const { household, member, members, loading: hhLoading, refresh: refreshHousehold } = useHousehold(user?.id)
   const { chores, refresh: refreshChores } = useChores(household?.id)
   const { logs: weeklyLogs, refresh: refreshLogs } = useWeeklyLogs(household?.id)
+  usePushSubscription(user?.id)
   const [showWinner, setShowWinner] = useState(false)
   const [currentPrize, setCurrentPrize] = useState<Prize | null>(null)
   const [winnerDismissed, setWinnerDismissed] = useState(false)

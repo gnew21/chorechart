@@ -185,6 +185,7 @@ export function HomePage({ household, member, members, chores, weeklyLogs, onLog
         chore={selectedChore}
         householdId={household.id}
         userId={member.user_id}
+        displayName={member.display_name}
         method="manual"
         onLogged={onLogged}
         onClose={() => setSelectedChore(null)}

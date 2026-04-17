@@ -48,6 +48,13 @@ export function UpdatesPage({ household, member, members }: Props) {
       title: title.trim(),
       body: body.trim() || null,
     })
+    // Send push notification to household
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      await supabase.functions.invoke('send-push', {
+        body: { household_id: household.id, title: `📢 ${title.trim()}`, body: body.trim() || undefined, url: '/updates' },
+      })
+    }
     setTitle('')
     setBody('')
     setPosting(false)

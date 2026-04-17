@@ -7,6 +7,7 @@ interface Props {
   chore: Chore | null
   householdId: string
   userId: string
+  displayName?: string
   method?: LogMethod
   photoUrl?: string
   onLogged: () => void
@@ -26,7 +27,7 @@ function guessTimeOfDay(): TimeOfDay {
   return 'evening'
 }
 
-export function ChoreConfirmSheet({ chore, householdId, userId, method = 'manual', photoUrl, onLogged, onClose }: Props) {
+export function ChoreConfirmSheet({ chore, householdId, userId, displayName, method = 'manual', photoUrl, onLogged, onClose }: Props) {
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(guessTimeOfDay())
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -46,6 +47,14 @@ export function ChoreConfirmSheet({ chore, householdId, userId, method = 'manual
     setLoading(false)
     if (!error) {
       setDone(true)
+      supabase.functions.invoke('send-push', {
+        body: {
+          household_id: householdId,
+          title: `${chore.emoji} ${displayName ?? 'Someone'} completed ${chore.name}!`,
+          body: `+${chore.points} points`,
+          url: '/',
+        },
+      })
       setTimeout(() => {
         setDone(false)
         onLogged()
