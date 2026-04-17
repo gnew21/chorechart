@@ -1,61 +1,49 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import Stripe from 'https://esm.sh/stripe@14.21.0?target=deno'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const STRIPE_SECRET = Deno.env.get('STRIPE_SECRET_KEY')!
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') ?? '', {
-  apiVersion: '2023-10-16',
-  httpClient: Stripe.createFetchHttpClient(),
-})
-
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-)
-
-serve(async (req) => {
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'authorization, content-type',
+      },
+    })
   }
 
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
+  const { priceId, householdId, returnUrl } = await req.json()
+  if (!priceId || !householdId || !returnUrl) {
+    return new Response('missing fields', { status: 400 })
+  }
 
-  try {
-    const { priceId, householdId, returnUrl } = await req.json()
+  const params = new URLSearchParams({
+    'mode': 'subscription',
+    'line_items[0][price]': priceId,
+    'line_items[0][quantity]': '1',
+    'success_url': `${returnUrl}/?checkout=success`,
+    'cancel_url': `${returnUrl}/settings`,
+    'metadata[household_id]': householdId,
+    'allow_promotion_codes': 'true',
+  })
 
-    const { data: household } = await supabase
-      .from('households')
-      .select('stripe_customer_id, name')
-      .eq('id', householdId)
-      .single()
+  const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${STRIPE_SECRET}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params.toString(),
+  })
 
-    let customerId = household?.stripe_customer_id
+  const session = await stripeRes.json()
 
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        name: household?.name ?? 'ChoreChart Household',
-        metadata: { household_id: householdId },
-      })
-      customerId = customer.id
-      await supabase.from('households').update({ stripe_customer_id: customerId }).eq('id', householdId)
-    }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      line_items: [{ price: priceId, quantity: 1 }],
-      mode: 'subscription',
-      success_url: `${returnUrl}/?success=1`,
-      cancel_url: `${returnUrl}/settings`,
-      metadata: { household_id: householdId },
-    })
-
-    return new Response(JSON.stringify({ sessionId: session.id, url: session.url }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
-  } catch (e) {
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
+  if (!stripeRes.ok) {
+    return new Response(JSON.stringify({ error: session.error?.message }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     })
   }
+
+  return new Response(JSON.stringify({ url: session.url }), {
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+  })
 })
