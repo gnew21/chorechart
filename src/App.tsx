@@ -20,6 +20,7 @@ import { SundayWinnerPage } from './pages/SundayWinnerPage'
 import { CalendarPage } from './pages/CalendarPage'
 import { PhotosPage } from './pages/PhotosPage'
 import { UpdatesPage } from './pages/UpdatesPage'
+import { MessagesPage } from './pages/MessagesPage'
 import { BottomNav } from './components/BottomNav'
 import { usePushSubscription } from './hooks/usePushSubscription'
 
@@ -122,6 +123,9 @@ function AppShell() {
         } />
         <Route path="/updates" element={
           <UpdatesPage household={household} member={member} members={members} />
+        } />
+        <Route path="/messages" element={
+          <MessagesPage household={household} member={member} members={members} />
         } />
         <Route path="/settings" element={
           <SettingsPage household={household} member={member} onRefresh={handleRefresh} />

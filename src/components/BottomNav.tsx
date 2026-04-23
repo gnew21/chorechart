@@ -13,7 +13,7 @@ export function BottomNav({ member }: Props) {
   const base = 'flex flex-col items-center gap-0.5 text-xs py-2 px-3 text-gray-400'
   const active = 'text-green-500'
 
-  const moreRoutes = ['/tracking', '/calendar', '/photos', '/updates', ...(isAdmin ? ['/admin'] : [])]
+  const moreRoutes = ['/tracking', '/calendar', '/photos', '/updates', '/messages', ...(isAdmin ? ['/admin'] : [])]
   const moreIsActive = moreRoutes.includes(location.pathname)
 
   return (
@@ -64,6 +64,10 @@ export function BottomNav({ member }: Props) {
           <NavLink to="/log" className={({ isActive }) => `${base} ${isActive ? active : ''}`}>
             <span className="text-xl">✅</span>
             <span>Log</span>
+          </NavLink>
+          <NavLink to="/messages" className={({ isActive }) => `${base} ${isActive ? active : ''}`}>
+            <span className="text-xl">💬</span>
+            <span>Chat</span>
           </NavLink>
           <button
             onClick={() => setMoreOpen(o => !o)}
