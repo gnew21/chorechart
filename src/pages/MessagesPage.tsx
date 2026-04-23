@@ -95,14 +95,6 @@ export function MessagesPage({ household, member, members }: Props) {
 
   const chatPartner = chat !== 'group' ? memberMap.get(chat) : null
 
-  // Get last message per DM for preview
-  function lastDM(userId: string) {
-    return messages.find(m =>
-      (m.sender_id === userId || m.recipient_id === userId) &&
-      (m.sender_id === member.user_id || m.recipient_id === member.user_id)
-    )
-  }
-
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Sidebar / chat list */}
