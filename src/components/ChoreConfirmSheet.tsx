@@ -68,35 +68,60 @@ export function ChoreConfirmSheet({ chore, householdId, userId, displayName, met
       {chore && (
         <div className="p-5 space-y-5">
           {done ? (
-            <div className="text-center py-10 fade-in">
-              <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4">🎉</div>
-              <p className="text-2xl font-bold text-emerald-600">+{chore.points} pts!</p>
-              <p className="text-gray-400 text-sm mt-1">Great job!</p>
+            /* Success state */
+            <div className="text-center py-12 fade-in">
+              <div
+                className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-5"
+                style={{ backgroundColor: '#F0FDF4' }}
+              >
+                {chore.emoji}
+              </div>
+              <p className="text-[34px] font-bold tracking-[-0.03em] text-emerald-500">
+                +{chore.points} pts
+              </p>
+              <p className="text-[15px] mt-1.5 tracking-[-0.01em]" style={{ color: '#86868B' }}>
+                Great job!
+              </p>
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-3xl flex-shrink-0">
+              {/* Chore row */}
+              <div
+                className="flex items-center gap-4 px-4 py-3.5 rounded-2xl"
+                style={{ backgroundColor: '#F5F5F7' }}
+              >
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+                  style={{ backgroundColor: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+                >
                   {chore.emoji}
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900 text-lg">{chore.name}</p>
-                  <p className="text-emerald-500 font-semibold">{chore.points} points</p>
+                  <p
+                    className="text-[17px] font-semibold tracking-[-0.01em]"
+                    style={{ color: '#1D1D1F' }}
+                  >
+                    {chore.name}
+                  </p>
+                  <p className="text-[13px] font-semibold text-emerald-500 mt-0.5">
+                    {chore.points} points
+                  </p>
                 </div>
               </div>
 
+              {/* Time picker */}
               <div>
-                <p className="text-sm font-medium text-gray-500 mb-2.5">When did you do this?</p>
+                <p className="section-label mb-2.5">When did you do this?</p>
                 <div className="flex gap-2">
                   {(['morning', 'afternoon', 'evening'] as TimeOfDay[]).map(t => (
                     <button
                       key={t}
                       onClick={() => setTimeOfDay(t)}
-                      className={`flex-1 py-2.5 px-2 rounded-xl text-sm font-semibold transition-all ${
-                        timeOfDay === t
-                          ? 'bg-emerald-500 text-white shadow-sm'
-                          : 'bg-gray-100 text-gray-500'
-                      }`}
+                      className="flex-1 py-2.5 px-2 rounded-xl text-[13px] font-semibold transition-all active:opacity-70"
+                      style={{
+                        backgroundColor: timeOfDay === t ? '#1D1D1F' : '#F5F5F7',
+                        color: timeOfDay === t ? 'white' : '#86868B',
+                      }}
                     >
                       {timeLabels[t]}
                     </button>
@@ -109,7 +134,7 @@ export function ChoreConfirmSheet({ chore, householdId, userId, displayName, met
                 disabled={loading}
                 className="btn-primary"
               >
-                {loading ? 'Logging…' : 'Mark as Done ✓'}
+                {loading ? 'Logging…' : 'Mark as Done'}
               </button>
             </>
           )}

@@ -19,7 +19,7 @@ interface Props {
   members: HouseholdMember[]
 }
 
-type Chat = 'group' | string // string = user_id of DM recipient
+type Chat = 'group' | string
 
 function formatTime(ts: string) {
   const d = new Date(ts)
@@ -59,7 +59,6 @@ export function MessagesPage({ household, member, members }: Props) {
 
   useEffect(() => { loadMessages() }, [loadMessages])
 
-  // Realtime subscription
   useEffect(() => {
     const channel = supabase
       .channel(`messages-${household.id}-${chat}`)
@@ -96,26 +95,37 @@ export function MessagesPage({ household, member, members }: Props) {
   const chatPartner = chat !== 'group' ? memberMap.get(chat) : null
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* Sidebar / chat list */}
-      {!chat || chat === 'group' && messages.length === 0 ? null : null}
-
+    <div className="flex flex-col h-screen" style={{ backgroundColor: '#F5F5F7' }}>
       {/* Header */}
-      <div className="bg-gradient-to-br from-green-600 via-emerald-500 to-teal-500 px-5 pt-14 pb-4 flex-shrink-0">
-        <h1 className="text-white text-2xl font-bold">Messages</h1>
-        {/* Chat selector */}
-        <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+      <div className="px-5 pt-14 pb-3 flex-shrink-0" style={{ backgroundColor: '#F5F5F7' }}>
+        <h1 className="page-title">Messages</h1>
+      </div>
+
+      {/* Chat selector */}
+      <div className="px-4 pb-3 flex-shrink-0">
+        <div className="flex gap-2 overflow-x-auto pb-0.5">
           <button
             onClick={() => setChat('group')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold flex-shrink-0 transition-all ${chat === 'group' ? 'bg-white text-emerald-600' : 'bg-white/20 text-white'}`}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] flex-shrink-0 font-semibold transition-all active:opacity-70"
+            style={{
+              backgroundColor: chat === 'group' ? '#1D1D1F' : 'white',
+              color: chat === 'group' ? 'white' : '#86868B',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            }}
           >
-            <span>👨‍👩‍👧‍👦</span> Group
+            <span>👨‍👩‍👧‍👦</span>
+            <span>Group</span>
           </button>
           {otherMembers.map(m => (
             <button
               key={m.user_id}
               onClick={() => setChat(m.user_id)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold flex-shrink-0 transition-all ${chat === m.user_id ? 'bg-white text-emerald-600' : 'bg-white/20 text-white'}`}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] flex-shrink-0 font-semibold transition-all active:opacity-70"
+              style={{
+                backgroundColor: chat === m.user_id ? '#1D1D1F' : 'white',
+                color: chat === m.user_id ? 'white' : '#86868B',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              }}
             >
               <Avatar name={m.display_name} colour={m.avatar_colour} size="sm" />
               {m.display_name.split(' ')[0]}
@@ -124,15 +134,18 @@ export function MessagesPage({ household, member, members }: Props) {
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      {/* Messages area */}
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3">
         {messages.length === 0 && (
           <div className="text-center py-16">
-            <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-sm">
+            <div
+              className="w-16 h-16 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-3"
+              style={{ backgroundColor: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+            >
               {chat === 'group' ? '👨‍👩‍👧‍👦' : '💬'}
             </div>
-            <p className="text-gray-500 font-medium">
-              {chat === 'group' ? 'Start the group conversation' : `Start a chat with ${chatPartner?.display_name}`}
+            <p className="text-[15px] font-semibold tracking-[-0.01em]" style={{ color: '#1D1D1F' }}>
+              {chat === 'group' ? 'Start the group conversation' : `Chat with ${chatPartner?.display_name}`}
             </p>
           </div>
         )}
@@ -145,25 +158,27 @@ export function MessagesPage({ household, member, members }: Props) {
 
           return (
             <div key={msg.id} className={`flex items-end gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
-              {/* Avatar space */}
               <div className="w-7 flex-shrink-0">
                 {showAvatar && sender && (
                   <Avatar name={sender.display_name} colour={sender.avatar_colour} size="sm" />
                 )}
               </div>
 
-              <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
+              <div className={`max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                 {showAvatar && !isMe && sender && (
-                  <p className="text-xs text-gray-400 mb-1 ml-1">{sender.display_name}</p>
+                  <p className="text-[12px] mb-1 ml-1" style={{ color: '#86868B' }}>{sender.display_name}</p>
                 )}
-                <div className={`px-4 py-2.5 rounded-2xl text-sm ${
-                  isMe
-                    ? 'bg-emerald-500 text-white rounded-br-sm'
-                    : 'bg-white text-gray-900 shadow-sm border border-gray-100 rounded-bl-sm'
-                }`}>
+                <div
+                  className="px-4 py-2.5 rounded-2xl text-[14px]"
+                  style={
+                    isMe
+                      ? { backgroundColor: '#1D1D1F', color: 'white', borderBottomRightRadius: 4 }
+                      : { backgroundColor: 'white', color: '#1D1D1F', borderBottomLeftRadius: 4, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }
+                  }
+                >
                   {msg.body}
                 </div>
-                <p className="text-xs text-gray-400 mt-1 mx-1">{formatTime(msg.created_at)}</p>
+                <p className="text-[11px] mt-1 mx-1" style={{ color: '#86868B' }}>{formatTime(msg.created_at)}</p>
               </div>
             </div>
           )
@@ -171,8 +186,11 @@ export function MessagesPage({ household, member, members }: Props) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
-      <div className="px-4 py-3 bg-white border-t border-gray-100 pb-24 flex-shrink-0">
+      {/* Input bar */}
+      <div
+        className="px-4 py-3 pb-24 flex-shrink-0"
+        style={{ backgroundColor: 'white', borderTop: '1px solid rgba(0,0,0,0.06)' }}
+      >
         <div className="flex items-end gap-2">
           <textarea
             value={body}
@@ -180,13 +198,18 @@ export function MessagesPage({ household, member, members }: Props) {
             onKeyDown={handleKeyDown}
             placeholder={chat === 'group' ? 'Message the family…' : `Message ${chatPartner?.display_name}…`}
             rows={1}
-            className="flex-1 px-4 py-3 bg-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white transition-all resize-none"
-            style={{ maxHeight: 120 }}
+            className="flex-1 px-4 py-3 rounded-2xl text-[14px] focus:outline-none resize-none"
+            style={{
+              backgroundColor: '#F5F5F7',
+              color: '#1D1D1F',
+              maxHeight: 120,
+            }}
           />
           <button
             onClick={handleSend}
             disabled={sending || !body.trim()}
-            className="w-11 h-11 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-xl disabled:opacity-40 active:scale-95 transition-all flex-shrink-0"
+            className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl transition-opacity disabled:opacity-30 active:opacity-70 flex-shrink-0"
+            style={{ backgroundColor: '#1D1D1F', color: 'white' }}
           >
             ↑
           </button>

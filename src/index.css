@@ -5,11 +5,12 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
   }
 
   body {
-    @apply bg-gray-50 text-gray-900;
+    background-color: #F5F5F7;
+    color: #1D1D1F;
     margin: 0;
     overscroll-behavior: none;
   }
@@ -27,7 +28,7 @@
   }
 
   .sheet-enter {
-    animation: sheet-up 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    animation: sheet-up 0.38s cubic-bezier(0.32, 0.72, 0, 1);
   }
 
   @keyframes sheet-up {
@@ -36,31 +37,54 @@
   }
 
   .fade-in {
-    animation: fade 0.25s ease-out;
+    animation: fade 0.3s ease-out;
   }
 
   @keyframes fade {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* Apple-style card: white, subtle border, no shadow */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100;
+    @apply bg-white rounded-2xl border border-black/[0.06];
   }
 
+  /* Primary CTA — Apple black */
   .btn-primary {
-    @apply w-full py-3.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-2xl shadow-sm active:scale-95 transition-all disabled:opacity-50 disabled:scale-100;
+    @apply w-full py-[14px] bg-[#1D1D1F] text-white font-semibold rounded-2xl active:opacity-80 transition-all disabled:opacity-30 text-[15px] tracking-[-0.01em];
   }
 
+  /* Secondary — light gray */
   .btn-secondary {
-    @apply w-full py-3.5 bg-gray-100 text-gray-700 font-semibold rounded-2xl active:scale-95 transition-all;
+    @apply w-full py-[14px] bg-[#F5F5F7] text-[#1D1D1F] font-semibold rounded-2xl active:opacity-70 transition-all text-[15px];
   }
 
+  /* Green accent button */
+  .btn-green {
+    @apply w-full py-[14px] bg-emerald-500 text-white font-semibold rounded-2xl active:opacity-80 transition-all disabled:opacity-30 text-[15px];
+  }
+
+  /* Input — Apple-style filled */
   .input {
-    @apply w-full px-4 py-3.5 bg-gray-100 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white transition-all;
+    @apply w-full px-4 py-[14px] bg-[#F5F5F7] rounded-2xl text-[#1D1D1F] placeholder-[#86868B] focus:outline-none focus:bg-white focus:ring-1 focus:ring-black/20 transition-all text-[15px];
   }
 
-  .page-header {
-    @apply px-5 pt-6 pb-4 bg-white/80 backdrop-blur sticky top-0 z-10 border-b border-gray-100/80;
+  /* Large page heading */
+  .page-title {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #1D1D1F;
+    line-height: 1.1;
+  }
+
+  /* Small section label */
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #86868B;
   }
 }

@@ -15,7 +15,6 @@ export function AuthPage() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-
     if (mode === 'signup') {
       const { error } = await supabase.auth.signUp({ email, password })
       if (error) setError(error.message)
@@ -24,19 +23,18 @@ export function AuthPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
     }
-
     setLoading(false)
   }
 
   if (sent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500 p-6">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F5F7] p-6">
         <div className="text-center max-w-sm fade-in">
-          <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6">📬</div>
-          <h1 className="text-2xl font-bold text-white mb-2">Check your email</h1>
-          <p className="text-white/70">We sent a confirmation link to <strong className="text-white">{email}</strong></p>
-          <button onClick={() => setSent(false)} className="mt-8 px-6 py-2.5 bg-white/20 text-white rounded-xl text-sm font-medium">
-            Back to login
+          <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6">📬</div>
+          <h1 className="text-[28px] font-bold tracking-tight text-[#1D1D1F] mb-2">Check your email</h1>
+          <p className="text-[#6E6E73] text-[15px]">We sent a link to <strong className="text-[#1D1D1F]">{email}</strong></p>
+          <button onClick={() => setSent(false)} className="mt-8 px-6 py-2.5 bg-[#F5F5F7] border border-black/10 text-[#1D1D1F] rounded-xl text-[15px] font-medium">
+            Back to sign in
           </button>
         </div>
       </div>
@@ -44,25 +42,25 @@ export function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500">
-      {/* Top branding */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 pb-0">
-        <div className="fade-in text-center mb-8">
-          <div className="w-24 h-24 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center text-5xl mx-auto mb-5 shadow-lg">🏡</div>
-          <h1 className="text-4xl font-bold text-white tracking-tight">FamilyApp</h1>
-          <p className="text-white/70 mt-2 text-lg">Chores, points and family life</p>
+    <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
+      {/* Branding */}
+      <div className="flex-1 flex flex-col items-center justify-center p-8 pb-0">
+        <div className="fade-in text-center">
+          <div className="w-20 h-20 bg-emerald-500 rounded-[22px] flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg shadow-emerald-500/20">🏡</div>
+          <h1 className="text-[40px] font-bold tracking-[-0.03em] text-[#1D1D1F]">FamilyApp</h1>
+          <p className="text-[#6E6E73] mt-2 text-[17px]">Chores, points and family life</p>
         </div>
       </div>
 
-      {/* Card */}
-      <div className="bg-white rounded-t-3xl p-6 pt-8 shadow-2xl">
-        {/* Mode toggle */}
-        <div className="flex bg-gray-100 rounded-2xl p-1 mb-6">
+      {/* Form card */}
+      <div className="bg-white rounded-t-3xl p-6 pt-8 mt-8 border-t border-black/[0.06]">
+        {/* Toggle */}
+        <div className="flex bg-[#F5F5F7] rounded-xl p-1 mb-6">
           {(['login', 'signup'] as Mode[]).map(m => (
             <button
               key={m}
               onClick={() => { setMode(m); setError(null) }}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${mode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
+              className={`flex-1 py-2 rounded-lg text-[14px] font-semibold transition-all ${mode === m ? 'bg-white text-[#1D1D1F] shadow-sm' : 'text-[#86868B]'}`}
             >
               {m === 'login' ? 'Sign In' : 'Create Account'}
             </button>
@@ -76,17 +74,15 @@ export function AuthPage() {
             onChange={e => setPassword(e.target.value)} required minLength={6} className="input" />
 
           {error && (
-            <div className="px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
-              <p className="text-red-500 text-sm">{error}</p>
-            </div>
+            <p className="text-red-500 text-[13px] px-1">{error}</p>
           )}
 
           <button type="submit" disabled={loading} className="btn-primary mt-2">
-            {loading ? '…' : mode === 'login' ? 'Sign In →' : 'Create Account →'}
+            {loading ? '…' : mode === 'login' ? 'Sign In' : 'Create Account'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-400 mt-6">
+        <p className="text-center text-[12px] text-[#86868B] mt-6">
           By continuing you agree to our terms of service
         </p>
       </div>

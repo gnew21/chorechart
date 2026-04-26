@@ -58,111 +58,143 @@ export function SettingsPage({ household, member, onRefresh }: Props) {
   }
 
   return (
-    <div className="pb-24 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-slate-700 via-slate-600 to-gray-600 px-5 pt-14 pb-16">
+    <div className="pb-24 min-h-screen" style={{ backgroundColor: '#F5F5F7' }}>
+      {/* Page header */}
+      <div className="px-5 pt-14 pb-6" style={{ backgroundColor: '#F5F5F7' }}>
+        <h1 className="page-title">Settings</h1>
+      </div>
+
+      {/* Avatar + identity hero */}
+      <div className="mx-4 mb-3 card p-5">
         <div className="flex items-center gap-4">
           <Avatar name={name || member.display_name} colour={colour} size="lg" />
-          <div>
-            <h1 className="text-white text-xl font-bold">{member.display_name}</h1>
-            <p className="text-slate-300 text-sm">{household.name} · {planLabel[household.plan]}</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-[17px] font-semibold tracking-[-0.01em]" style={{ color: '#1D1D1F' }}>
+              {name || member.display_name}
+            </p>
+            <p className="text-[13px] mt-0.5" style={{ color: '#86868B' }}>
+              {household.name} · {planLabel[household.plan]}
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="px-4 -mt-6 space-y-4">
-        {/* Profile card */}
-        <div className="card p-5 space-y-4">
-          <h2 className="font-bold text-gray-900">Your Profile</h2>
-          <div>
-            <label className="text-xs font-medium text-gray-500 mb-1.5 block">Display name</label>
+      <div className="px-4 space-y-3">
+        {/* Profile section */}
+        <p className="section-label px-1">Your Profile</p>
+        <div className="card overflow-hidden">
+          {/* Name row */}
+          <div className="px-4 py-3.5 border-b border-black/[0.04]">
+            <label className="section-label mb-1 block">Display Name</label>
             <input
               value={name}
               onChange={e => setName(e.target.value)}
-              className="input"
+              className="input mt-1"
             />
           </div>
-          <div>
-            <label className="text-xs font-medium text-gray-500 mb-2 block">Avatar colour</label>
+          {/* Colour picker row */}
+          <div className="px-4 py-3.5">
+            <label className="section-label mb-2.5 block">Avatar Colour</label>
             <div className="flex flex-wrap gap-2.5">
               {AVATAR_COLOURS.map(c => (
                 <button
                   key={c}
                   onClick={() => setColour(c)}
-                  className={`w-9 h-9 rounded-full border-4 transition-all ${colour === c ? 'border-gray-800 scale-110' : 'border-transparent'}`}
+                  className={`w-9 h-9 rounded-full transition-all active:opacity-70 ${
+                    colour === c ? 'ring-2 ring-offset-2 ring-[#1D1D1F]' : ''
+                  }`}
                   style={{ backgroundColor: c }}
                 />
               ))}
             </div>
           </div>
-          <button
-            onClick={saveProfile}
-            disabled={saving}
-            className="btn-primary"
-          >
-            {saved ? '✓ Saved!' : saving ? 'Saving…' : 'Save Profile'}
-          </button>
         </div>
 
-        {/* Household info */}
-        <div className="card p-5">
-          <h2 className="font-bold text-gray-900 mb-4">Household</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Name</span>
-              <span className="font-semibold text-gray-900">{household.name}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Join Code</span>
-              <span className="font-mono font-bold text-gray-900 tracking-widest bg-gray-100 px-3 py-1 rounded-lg">{household.join_code}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Plan</span>
-              <span className="font-semibold text-emerald-600">{planLabel[household.plan]}</span>
-            </div>
+        <button
+          onClick={saveProfile}
+          disabled={saving}
+          className="btn-primary"
+        >
+          {saved ? '✓ Saved' : saving ? 'Saving…' : 'Save Profile'}
+        </button>
+
+        {/* Household section */}
+        <p className="section-label px-1 pt-2">Household</p>
+        <div className="card overflow-hidden">
+          <div className="flex justify-between items-center px-4 py-3.5 border-b border-black/[0.04]">
+            <span className="text-[15px]" style={{ color: '#86868B' }}>Name</span>
+            <span className="text-[15px] font-semibold tracking-[-0.01em]" style={{ color: '#1D1D1F' }}>
+              {household.name}
+            </span>
+          </div>
+          <div className="flex justify-between items-center px-4 py-3.5 border-b border-black/[0.04]">
+            <span className="text-[15px]" style={{ color: '#86868B' }}>Join Code</span>
+            <span
+              className="font-mono text-[13px] font-bold tracking-widest px-3 py-1 rounded-lg"
+              style={{ backgroundColor: '#F5F5F7', color: '#1D1D1F' }}
+            >
+              {household.join_code}
+            </span>
+          </div>
+          <div className="flex justify-between items-center px-4 py-3.5">
+            <span className="text-[15px]" style={{ color: '#86868B' }}>Plan</span>
+            <span className="text-[15px] font-semibold text-emerald-500">
+              {planLabel[household.plan]}
+            </span>
           </div>
         </div>
 
-        {/* Upgrade */}
+        {/* Upgrade section */}
         {household.plan !== 'family_plus' && (
-          <div className="space-y-3">
-            <h2 className="font-bold text-gray-900 px-1">Upgrade Plan</h2>
-            {(['family', 'family_plus'] as const)
-              .filter(p => household.plan === 'free' || p === 'family_plus')
-              .map(planKey => (
-                <div key={planKey} className="card p-4 border-2 border-emerald-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="font-bold text-gray-900">{PLANS[planKey].name}</p>
-                      <p className="text-emerald-600 font-bold text-lg">{PLANS[planKey].price}</p>
+          <>
+            <p className="section-label px-1 pt-2">Upgrade Plan</p>
+            <div className="space-y-3">
+              {(['family', 'family_plus'] as const)
+                .filter(p => household.plan === 'free' || p === 'family_plus')
+                .map(planKey => (
+                  <div key={planKey} className="card p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <p className="text-[15px] font-semibold tracking-[-0.01em]" style={{ color: '#1D1D1F' }}>
+                          {PLANS[planKey].name}
+                        </p>
+                        <p className="text-[17px] font-bold text-emerald-500 mt-0.5">
+                          {PLANS[planKey].price}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleUpgrade(planKey)}
+                        disabled={upgrading}
+                        className="btn-green"
+                        style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 13 }}
+                      >
+                        Upgrade
+                      </button>
                     </div>
-                    <button
-                      onClick={() => handleUpgrade(planKey)}
-                      disabled={upgrading}
-                      className="px-4 py-2 bg-emerald-500 text-white text-sm font-bold rounded-xl disabled:opacity-50 active:scale-95 transition-all"
-                    >
-                      Upgrade
-                    </button>
+                    <ul className="space-y-1.5">
+                      {PLANS[planKey].features.map(f => (
+                        <li key={f} className="text-[13px] flex items-center gap-2" style={{ color: '#86868B' }}>
+                          <span className="text-emerald-500 font-bold">✓</span>
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-1.5">
-                    {PLANS[planKey].features.map(f => (
-                      <li key={f} className="text-sm text-gray-500 flex items-center gap-2">
-                        <span className="text-emerald-500 font-bold">✓</span> {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-          </div>
+                ))}
+            </div>
+          </>
         )}
 
         {/* Sign out */}
-        <button
-          onClick={signOut}
-          className="w-full py-3.5 border-2 border-red-100 text-red-400 font-semibold rounded-2xl text-sm active:scale-95 transition-all"
-        >
-          Sign Out
-        </button>
+        <div className="pt-2 pb-2">
+          <button
+            onClick={signOut}
+            className="w-full py-3.5 text-[15px] font-semibold active:opacity-70 transition-opacity"
+            style={{ color: '#FF3B30' }}
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
     </div>
   )

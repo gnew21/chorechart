@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Household, HouseholdMember, Chore } from '../types'
 import { supabase } from '../lib/supabase'
+import { Avatar } from '../components/Avatar'
 
 interface Props {
   household: Household
@@ -13,54 +14,55 @@ interface Props {
 
 type Tab = 'chores' | 'members' | 'prizes' | 'rules'
 
-const EMOJIS = ['🍽️','🧹','🗑️','👕','🚿','🪣','🐾','🍳','🛏️','🪟','🌿','🧺','🧴','🚗','📦']
-
 export function AdminPage({ household, member, members, chores, onRefresh }: Props) {
   const [tab, setTab] = useState<Tab>('chores')
   const navigate = useNavigate()
 
   const tabLabels: Record<Tab, string> = {
-    chores: '🧹 Chores',
-    members: '👥 Members',
-    prizes: '🎁 Prizes',
-    rules: '⚡ Rules',
+    chores: 'Chores',
+    members: 'Members',
+    prizes: 'Prizes',
+    rules: 'Rules',
   }
 
   return (
-    <div className="pb-24 bg-gray-50 min-h-screen">
+    <div className="pb-24 min-h-screen" style={{ backgroundColor: '#F5F5F7' }}>
       {/* Header */}
-      <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-400 px-5 pt-14 pb-8">
-        <div className="flex items-center justify-between">
+      <div className="px-5 pt-14 pb-6" style={{ backgroundColor: '#F5F5F7' }}>
+        <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-white text-2xl font-bold">Admin Panel</h1>
-            <p className="text-amber-100 text-sm mt-0.5">{household.name}</p>
+            <h1 className="page-title">Admin</h1>
+            <p className="text-[15px] mt-1 tracking-[-0.01em]" style={{ color: '#86868B' }}>{household.name}</p>
           </div>
           <button
             onClick={() => navigate('/admin/qr')}
-            className="px-4 py-2 bg-white/20 text-white font-semibold rounded-xl text-sm active:scale-95 transition-all"
+            className="mt-1 px-4 py-2 rounded-xl text-[13px] font-semibold active:opacity-70 transition-opacity"
+            style={{ backgroundColor: 'white', color: '#1D1D1F', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}
           >
             QR Codes
           </button>
         </div>
       </div>
 
-      <div className="px-4 -mt-4 space-y-4">
+      <div className="px-4 space-y-4">
         {/* Tab switcher */}
-        <div className="card p-1.5">
-          <div className="grid grid-cols-4 gap-1">
-            {(['chores', 'members', 'prizes', 'rules'] as Tab[]).map(t => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`py-2 rounded-xl text-xs font-semibold capitalize transition-all ${tab === t ? 'bg-amber-500 text-white shadow-sm' : 'text-gray-500'}`}
-              >
-                {tabLabels[t]}
-              </button>
-            ))}
-          </div>
+        <div className="flex rounded-xl p-1" style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+          {(['chores', 'members', 'prizes', 'rules'] as Tab[]).map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className="flex-1 py-2 rounded-lg text-[12px] font-semibold capitalize transition-all active:opacity-70"
+              style={{
+                backgroundColor: tab === t ? '#1D1D1F' : 'transparent',
+                color: tab === t ? 'white' : '#86868B',
+              }}
+            >
+              {tabLabels[t]}
+            </button>
+          ))}
         </div>
 
-        {tab === 'chores' && <ChoresTab household={household} chores={chores} onRefresh={onRefresh} emojis={EMOJIS} />}
+        {tab === 'chores' && <ChoresTab household={household} chores={chores} onRefresh={onRefresh} />}
         {tab === 'members' && <MembersTab household={household} members={members} currentMember={member} onRefresh={onRefresh} />}
         {tab === 'prizes' && <PrizesTab household={household} />}
         {tab === 'rules' && <RulesTab household={household} />}
@@ -69,7 +71,7 @@ export function AdminPage({ household, member, members, chores, onRefresh }: Pro
   )
 }
 
-function ChoresTab({ household, chores, onRefresh, emojis }: { household: Household; chores: Chore[]; onRefresh: () => void; emojis: string[] }) {
+function ChoresTab({ household, chores, onRefresh }: { household: Household; chores: Chore[]; onRefresh: () => void }) {
   const [name, setName] = useState('')
   const [emoji, setEmoji] = useState('🍽️')
   const [points, setPoints] = useState(10)
@@ -104,16 +106,43 @@ function ChoresTab({ household, chores, onRefresh, emojis }: { household: Househ
 
   return (
     <div className="space-y-4">
+      {/* Add chore form */}
       <div className="card p-4 space-y-3">
-        <h3 className="font-bold text-gray-900">Add Chore</h3>
+        <p className="section-label">New Chore</p>
         <input
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Chore name"
           className="input"
         />
+        {/* Emoji input */}
         <div>
-          <label className="text-xs font-medium text-gray-500 mb-1.5 block">Points: <span className="text-amber-500 font-bold">{points}</span></label>
+          <p className="section-label mb-2">Emoji</p>
+          <div className="flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+              style={{ backgroundColor: '#F5F5F7' }}
+            >
+              {emoji}
+            </div>
+            <input
+              value={emoji}
+              onChange={e => {
+                const chars = [...e.target.value]
+                const filtered = chars.filter(c => c.trim())
+                if (filtered.length) setEmoji(filtered[filtered.length - 1])
+              }}
+              placeholder="Type or paste any emoji…"
+              className="input flex-1"
+            />
+          </div>
+        </div>
+        {/* Points slider */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <p className="section-label">Points</p>
+            <span className="text-[15px] font-bold text-emerald-500">{points}</span>
+          </div>
           <input
             type="range"
             min={1}
@@ -121,25 +150,8 @@ function ChoresTab({ household, chores, onRefresh, emojis }: { household: Househ
             step={1}
             value={points}
             onChange={e => setPoints(Number(e.target.value))}
-            className="w-full accent-amber-500"
+            className="w-full accent-emerald-500"
           />
-        </div>
-        <div>
-          <label className="text-xs font-medium text-gray-500 mb-1.5 block">Emoji</label>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl flex-shrink-0">{emoji}</div>
-            <input
-              value={emoji}
-              onChange={e => { const v = [...e.target.value].filter(c => c.trim()); if (v.length) setEmoji(v[v.length - 1]) }}
-              placeholder="Tap to open emoji keyboard…"
-              className="input"
-            />
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {emojis.map(e => (
-              <button key={e} onClick={() => setEmoji(e)} className={`text-xl p-2 rounded-xl transition-all ${emoji === e ? 'bg-amber-100 scale-110' : 'bg-gray-50'}`}>{e}</button>
-            ))}
-          </div>
         </div>
         <button
           onClick={addChore}
@@ -150,25 +162,45 @@ function ChoresTab({ household, chores, onRefresh, emojis }: { household: Househ
         </button>
       </div>
 
-      <div className="space-y-2">
-        {chores.map(chore => (
-          <div key={chore.id} className={`card flex items-center gap-3 p-3.5 ${!chore.active ? 'opacity-50' : ''}`}>
-            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-xl flex-shrink-0">
-              {chore.emoji}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-gray-900 truncate">{chore.name}</p>
-              <p className="text-xs text-gray-400">{chore.points} pts</p>
-            </div>
-            <button onClick={() => toggleChore(chore)} className="text-xs px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 font-medium">
-              {chore.active ? 'Hide' : 'Show'}
-            </button>
-            <button onClick={() => deleteChore(chore.id)} className="text-xs px-2.5 py-1.5 rounded-lg bg-red-50 text-red-500 font-medium">
-              Del
-            </button>
+      {/* Chore list */}
+      {chores.length > 0 && (
+        <>
+          <p className="section-label px-1">All Chores</p>
+          <div className="card overflow-hidden">
+            {chores.map((chore, idx) => (
+              <div
+                key={chore.id}
+                className={`flex items-center gap-3 px-4 py-3.5 ${idx < chores.length - 1 ? 'border-b border-black/[0.04]' : ''} ${!chore.active ? 'opacity-40' : ''}`}
+              >
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                  style={{ backgroundColor: '#F5F5F7' }}
+                >
+                  {chore.emoji}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-semibold tracking-[-0.01em] truncate" style={{ color: '#1D1D1F' }}>{chore.name}</p>
+                  <p className="text-[12px] font-semibold text-emerald-500">{chore.points} pts</p>
+                </div>
+                <button
+                  onClick={() => toggleChore(chore)}
+                  className="text-[12px] font-semibold px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity"
+                  style={{ backgroundColor: '#F5F5F7', color: '#86868B' }}
+                >
+                  {chore.active ? 'Hide' : 'Show'}
+                </button>
+                <button
+                  onClick={() => deleteChore(chore.id)}
+                  className="text-[12px] font-semibold px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity"
+                  style={{ backgroundColor: '#FFF2F2', color: '#FF3B30' }}
+                >
+                  Del
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   )
 }
@@ -188,29 +220,48 @@ function MembersTab({ household, members, currentMember, onRefresh }: { househol
   }
 
   return (
-    <div className="space-y-3">
-      <div className="card p-4 bg-blue-50 border-blue-100">
-        <p className="text-xs font-semibold text-blue-500 mb-1">INVITE CODE</p>
-        <p className="text-3xl font-bold text-blue-900 tracking-widest">{household.join_code}</p>
-        <p className="text-xs text-blue-400 mt-1">Share this code to invite family members</p>
+    <div className="space-y-4">
+      {/* Invite code */}
+      <div className="card p-4">
+        <p className="section-label mb-2">Invite Code</p>
+        <div className="flex items-center justify-between">
+          <span
+            className="font-mono text-[22px] font-bold tracking-widest"
+            style={{ color: '#1D1D1F' }}
+          >
+            {household.join_code}
+          </span>
+          <span className="text-[13px]" style={{ color: '#86868B' }}>Share to invite</span>
+        </div>
       </div>
 
-      <div className="space-y-2">
-        {members.map(m => (
-          <div key={m.id} className="card flex items-center gap-3 p-3.5">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style={{ backgroundColor: m.avatar_colour }}>
-              {m.display_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
-            </div>
+      {/* Members list */}
+      <p className="section-label px-1">Members</p>
+      <div className="card overflow-hidden">
+        {members.map((m, idx) => (
+          <div
+            key={m.id}
+            className={`flex items-center gap-3 px-4 py-3.5 ${idx < members.length - 1 ? 'border-b border-black/[0.04]' : ''}`}
+          >
+            <Avatar name={m.display_name} colour={m.avatar_colour} size="md" />
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-gray-900 truncate">{m.display_name}</p>
-              <p className="text-xs text-gray-400 capitalize">{m.role}</p>
+              <p className="text-[15px] font-semibold tracking-[-0.01em] truncate" style={{ color: '#1D1D1F' }}>{m.display_name}</p>
+              <p className="text-[12px] capitalize" style={{ color: '#86868B' }}>{m.role}</p>
             </div>
             {m.id !== currentMember.id && (
               <>
-                <button onClick={() => toggleRole(m)} className="text-xs px-2.5 py-1.5 bg-gray-100 rounded-lg text-gray-600 font-medium">
+                <button
+                  onClick={() => toggleRole(m)}
+                  className="text-[12px] font-semibold px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity"
+                  style={{ backgroundColor: '#F5F5F7', color: '#1D1D1F' }}
+                >
                   {m.role === 'admin' ? '→ Member' : '→ Admin'}
                 </button>
-                <button onClick={() => removeMember(m)} className="text-xs px-2.5 py-1.5 bg-red-50 rounded-lg text-red-500 font-medium">
+                <button
+                  onClick={() => removeMember(m)}
+                  className="text-[12px] font-semibold px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity"
+                  style={{ backgroundColor: '#FFF2F2', color: '#FF3B30' }}
+                >
                   Remove
                 </button>
               </>
@@ -233,7 +284,6 @@ function PrizesTab({ household }: { household: Household }) {
     const weekStart = new Date()
     weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1)
     const weekStartStr = weekStart.toISOString().split('T')[0]
-
     await supabase.from('prizes').upsert({
       household_id: household.id,
       week_start: weekStartStr,
@@ -246,8 +296,11 @@ function PrizesTab({ household }: { household: Household }) {
 
   return (
     <div className="space-y-4">
-      <div className="card p-4">
-        <p className="text-sm text-gray-500 mb-4">Set the prize for this week's winner. Revealed on Sunday night 🎉</p>
+      <div className="card p-4 space-y-3">
+        <p className="section-label">This Week's Prize</p>
+        <p className="text-[13px]" style={{ color: '#86868B' }}>
+          Set the reward for this week's top performer. Revealed Sunday night 🎉
+        </p>
         <textarea
           value={desc}
           onChange={e => setDesc(e.target.value)}
@@ -258,9 +311,9 @@ function PrizesTab({ household }: { household: Household }) {
         <button
           onClick={save}
           disabled={loading || !desc.trim()}
-          className="btn-primary mt-3"
+          className="btn-primary"
         >
-          {saved ? '✓ Prize Saved!' : 'Save Prize 🎁'}
+          {saved ? '✓ Prize Saved' : 'Save Prize'}
         </button>
       </div>
     </div>
@@ -287,21 +340,23 @@ function RulesTab({ household }: { household: Household }) {
     setTimeout(() => setSaved(false), 2000)
   }
 
+  const rules = [
+    { label: 'Weekend Multiplier', value: multiplier, setter: setMultiplier, min: 1, max: 3, step: 0.1, hint: 'Weekend chores earn this many × base points' },
+    { label: 'Streak Bonus', value: streakBonus, setter: setStreakBonus, min: 0, max: 20, step: 1, hint: 'Extra pts per consecutive day active' },
+    { label: 'Early Bird Bonus', value: earlyBird, setter: setEarlyBird, min: 0, max: 20, step: 1, hint: 'Extra pts for chores done before 9am' },
+  ]
+
   return (
     <div className="space-y-4">
       <div className="card p-4 space-y-4">
-        <p className="text-sm text-gray-500">Customise how points are calculated for your household.</p>
-        {[
-          { label: 'Weekend Multiplier', value: multiplier, setter: setMultiplier, min: 1, max: 3, step: 0.1, hint: 'Weekend chores earn this many × base points' },
-          { label: 'Streak Bonus (pts/day)', value: streakBonus, setter: setStreakBonus, min: 0, max: 20, step: 1, hint: 'Extra pts per consecutive day active' },
-          { label: 'Early Bird Bonus (pts)', value: earlyBird, setter: setEarlyBird, min: 0, max: 20, step: 1, hint: 'Extra pts for chores done before 9am' },
-        ].map(({ label, value, setter, min, max, step, hint }) => (
+        <p className="section-label">Point Rules</p>
+        {rules.map(({ label, value, setter, min, max, step, hint }) => (
           <div key={label}>
             <div className="flex items-center justify-between mb-0.5">
-              <p className="font-semibold text-sm text-gray-900">{label}</p>
-              <p className="text-amber-500 font-bold">{value}</p>
+              <p className="text-[15px] font-semibold tracking-[-0.01em]" style={{ color: '#1D1D1F' }}>{label}</p>
+              <span className="text-[15px] font-bold text-emerald-500">{value}</span>
             </div>
-            <p className="text-xs text-gray-400 mb-2">{hint}</p>
+            <p className="text-[12px] mb-2" style={{ color: '#86868B' }}>{hint}</p>
             <input
               type="range"
               min={min}
@@ -309,7 +364,7 @@ function RulesTab({ household }: { household: Household }) {
               step={step}
               value={value}
               onChange={e => setter(Number(e.target.value))}
-              className="w-full accent-amber-500"
+              className="w-full accent-emerald-500"
             />
           </div>
         ))}
@@ -318,7 +373,7 @@ function RulesTab({ household }: { household: Household }) {
           disabled={loading}
           className="btn-primary"
         >
-          {saved ? '✓ Rules Saved!' : 'Save Rules'}
+          {saved ? '✓ Rules Saved' : 'Save Rules'}
         </button>
       </div>
     </div>

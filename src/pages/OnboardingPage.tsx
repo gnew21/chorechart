@@ -97,18 +97,30 @@ export function OnboardingPage({ user, onComplete }: Props) {
 
   if (step === 'profile') {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500">
-        <div className="flex-1 flex flex-col items-center justify-center p-6 pb-0">
-          <div className="fade-in text-center mb-6">
-            <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg">👋</div>
-            <h1 className="text-3xl font-bold text-white">Set up your profile</h1>
-            <p className="text-white/70 mt-1">How should your family know you?</p>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F5F5F7' }}>
+        {/* Top area with icon + title */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 pb-4">
+          <div className="text-center mb-2">
+            <div
+              className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5"
+              style={{ backgroundColor: 'white', boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}
+            >
+              👋
+            </div>
+            <h1 className="page-title text-center">Set up your profile</h1>
+            <p className="text-[15px] mt-2 tracking-[-0.01em]" style={{ color: '#86868B' }}>
+              How should your family know you?
+            </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-t-3xl p-6 pt-8 shadow-2xl space-y-5">
+        {/* Bottom card */}
+        <div
+          className="rounded-t-3xl px-5 pt-8 pb-10 space-y-5"
+          style={{ backgroundColor: 'white', boxShadow: '0 -1px 0 rgba(0,0,0,0.06)' }}
+        >
           <div>
-            <label className="text-xs font-semibold text-gray-500 mb-1.5 block">YOUR NAME</label>
+            <label className="section-label mb-1.5 block">Your Name</label>
             <input
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
@@ -119,24 +131,37 @@ export function OnboardingPage({ user, onComplete }: Props) {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-gray-500 mb-2 block">PICK A COLOUR</label>
+            <label className="section-label mb-2.5 block">Pick a Colour</label>
             <div className="flex flex-wrap gap-2.5">
               {AVATAR_COLOURS.map(c => (
                 <button
                   key={c}
                   onClick={() => setColour(c)}
-                  className={`w-10 h-10 rounded-full border-4 transition-all ${colour === c ? 'border-gray-900 scale-110' : 'border-transparent'}`}
+                  className={`w-10 h-10 rounded-full transition-all active:opacity-70 ${
+                    colour === c ? 'ring-2 ring-offset-2 ring-[#1D1D1F]' : ''
+                  }`}
                   style={{ backgroundColor: c }}
                 />
               ))}
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white flex-shrink-0 shadow-sm" style={{ backgroundColor: colour }}>
-              {displayName ? displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?'}
+          {/* Avatar preview */}
+          <div
+            className="flex items-center gap-3 p-3.5 rounded-2xl"
+            style={{ backgroundColor: '#F5F5F7' }}
+          >
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center text-[15px] font-bold text-white flex-shrink-0"
+              style={{ backgroundColor: colour }}
+            >
+              {displayName
+                ? displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+                : '?'}
             </div>
-            <p className="font-semibold text-gray-900">{displayName || 'Your name'}</p>
+            <p className="text-[15px] font-semibold tracking-[-0.01em]" style={{ color: '#1D1D1F' }}>
+              {displayName || 'Your name'}
+            </p>
           </div>
 
           <button
@@ -144,7 +169,7 @@ export function OnboardingPage({ user, onComplete }: Props) {
             disabled={!displayName.trim()}
             className="btn-primary"
           >
-            Continue →
+            Continue
           </button>
         </div>
       </div>
@@ -152,26 +177,54 @@ export function OnboardingPage({ user, onComplete }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500">
-      <div className="flex-1 flex flex-col items-center justify-center p-6 pb-0">
-        <div className="fade-in text-center mb-6">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg">🏡</div>
-          <h1 className="text-3xl font-bold text-white">Your household</h1>
-          <p className="text-white/70 mt-1">Create or join a family group</p>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F5F5F7' }}>
+      {/* Top area */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-4">
+        <div className="text-center mb-2">
+          <div
+            className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-5"
+            style={{ backgroundColor: 'white', boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}
+          >
+            🏡
+          </div>
+          <h1 className="page-title text-center">Your household</h1>
+          <p className="text-[15px] mt-2 tracking-[-0.01em]" style={{ color: '#86868B' }}>
+            Create or join a family group
+          </p>
         </div>
       </div>
 
-      <div className="bg-white rounded-t-3xl p-6 pt-8 shadow-2xl space-y-5">
-        <div className="flex bg-gray-100 rounded-2xl p-1">
+      {/* Bottom card */}
+      <div
+        className="rounded-t-3xl px-5 pt-8 pb-10 space-y-5"
+        style={{ backgroundColor: 'white', boxShadow: '0 -1px 0 rgba(0,0,0,0.06)' }}
+      >
+        {/* Segmented control */}
+        <div
+          className="flex rounded-2xl p-1"
+          style={{ backgroundColor: '#F5F5F7' }}
+        >
           <button
             onClick={() => setMode('create')}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${mode === 'create' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
+            className={`flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all active:opacity-70 ${
+              mode === 'create' ? 'shadow-sm' : ''
+            }`}
+            style={{
+              backgroundColor: mode === 'create' ? 'white' : 'transparent',
+              color: mode === 'create' ? '#1D1D1F' : '#86868B',
+            }}
           >
             Create New
           </button>
           <button
             onClick={() => setMode('join')}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${mode === 'join' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}
+            className={`flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all active:opacity-70 ${
+              mode === 'join' ? 'shadow-sm' : ''
+            }`}
+            style={{
+              backgroundColor: mode === 'join' ? 'white' : 'transparent',
+              color: mode === 'join' ? '#1D1D1F' : '#86868B',
+            }}
           >
             Join Existing
           </button>
@@ -195,8 +248,11 @@ export function OnboardingPage({ user, onComplete }: Props) {
         )}
 
         {error && (
-          <div className="px-4 py-3 bg-red-50 border border-red-100 rounded-xl">
-            <p className="text-red-500 text-sm">{error}</p>
+          <div
+            className="px-4 py-3 rounded-xl"
+            style={{ backgroundColor: '#FFF2F2', border: '1px solid #FFD5D5' }}
+          >
+            <p className="text-[13px]" style={{ color: '#FF3B30' }}>{error}</p>
           </div>
         )}
 
@@ -205,11 +261,15 @@ export function OnboardingPage({ user, onComplete }: Props) {
           disabled={loading || (mode === 'create' ? !householdName.trim() : joinCode.length < 6)}
           className="btn-primary"
         >
-          {loading ? '…' : mode === 'create' ? 'Create Household 🎉' : 'Join Household →'}
+          {loading ? '…' : mode === 'create' ? 'Create Household' : 'Join Household'}
         </button>
 
-        <button onClick={() => setStep('profile')} className="w-full text-sm text-gray-400 py-1">
-          ← Back
+        <button
+          onClick={() => setStep('profile')}
+          className="w-full text-[13px] py-1 active:opacity-70 transition-opacity"
+          style={{ color: '#86868B' }}
+        >
+          Back
         </button>
       </div>
     </div>
